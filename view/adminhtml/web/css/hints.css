@@ -1,0 +1,21 @@
+.ho-hint {
+
+}
+
+.ho-hint-container {
+    outline: 0px dashed darkorange;
+}
+.ho-hint-block {
+    outline: 0px dashed hsl(195, 100%, 50%);
+}
+.ho-hint-ui-component {
+    outline: 0px dashed rebeccapurple;
+}
+
+.ho-hint-outline {
+    outline-width: 1px;
+}
+.ho-hint-hover {
+    /*box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
+    outline-style: solid;
+}
