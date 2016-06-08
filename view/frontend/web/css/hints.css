@@ -18,6 +18,7 @@
 
 .ho-hint-outline {
     outline-width: 1px;
+    min-height: 5px;
 }
 .ho-hint-hover {
     outline-style: solid;
