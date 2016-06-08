@@ -12,8 +12,13 @@ use Magento\Framework\App\State as AppState;
 use Magento\Framework\View\Layout;
 use Psr\Log\LoggerInterface as Logger;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\View\Layout\Element;
 
+/**
+ * Plugin to wrap all the rendered elements
+ * 
+ * Class LayoutPlugin
+ * @package Ho\TemplateHints\Plugin\View
+ */
 class LayoutPlugin
 {
     /** @var Layout */
@@ -214,7 +219,6 @@ class LayoutPlugin
 
         $result = json_encode([
             'name' => addslashes($block->getNameInLayout()),
-//            'template' => $block->getTemplate(),
             'templateFile' => substr($block->getTemplateFile(), $this->rootPathLengthOffset),
             'moduleName' => $block->getModuleName(),
             'class' => addslashes(get_class($block)),

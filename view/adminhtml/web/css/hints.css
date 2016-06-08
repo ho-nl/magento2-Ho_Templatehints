@@ -1,21 +1,24 @@
-.ho-hint {
-
-}
-
 .ho-hint-container {
-    outline: 0px dashed darkorange;
+    outline: 0 dashed darkorange;
 }
+.ho-hint-container.ho-hint-hover {
+    background-color: hsla(33, 100%, 50%, 0.1);
+}
+
 .ho-hint-block {
-    outline: 0px dashed hsl(195, 100%, 50%);
+    outline: 0 dashed hsl(195, 100%, 50%);
 }
+.ho-hint-block.ho-hint-hover {
+    background-color: hsla(195, 100%, 50%, 0.1);
+}
+
 .ho-hint-ui-component {
-    outline: 0px dashed rebeccapurple;
+    outline: 0 dashed rebeccapurple;
 }
 
 .ho-hint-outline {
     outline-width: 1px;
 }
 .ho-hint-hover {
-    /*box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);*/
     outline-style: solid;
 }
