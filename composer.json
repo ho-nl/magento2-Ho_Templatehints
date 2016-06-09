@@ -16,8 +16,7 @@
   },
   "type": "magento2-module",
   "version": "0.1.0",
-  "license": [
-  ],
+  "license": "BSD-2-Clause",
   "autoload": {
     "files": [
       "registration.php"
