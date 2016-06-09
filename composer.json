@@ -3,7 +3,7 @@
     "description": "",
     "require": {
         "php": "~5.5.0|~5.6.0|~7.0.0",
-        
+
         "magento/magento-composer-installer": "*"
     },
     "suggest": {
@@ -19,14 +19,14 @@
             "registration.php"
         ],
         "psr-4": {
-            "Ho\\TemplateHints\\": ""
+            "Ho\\Templatehints\\": ""
         }
     },
     "extra": {
         "map": [
             [
                 "*",
-                "Ho/TemplateHints"
+                "Ho/Templatehints"
             ]
         ]
     }

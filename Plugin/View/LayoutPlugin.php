@@ -5,29 +5,27 @@
  * Date: 07-06-16
  * Time: 23:14
  */
-namespace Ho\TemplateHints\Plugin\View;
+namespace Ho\Templatehints\Plugin\View;
 
 use Closure;
+use Ho\Templatehints\Helper\Config;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\State as AppState;
 use Magento\Framework\View\Layout;
 use Psr\Log\LoggerInterface as Logger;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\App\RequestInterface;
 
 /**
  * Plugin to wrap all the rendered elements
  * 
  * Class LayoutPlugin
- * @package Ho\TemplateHints\Plugin\View
+ * @package Ho\Templatehints\Plugin\View
  */
 class LayoutPlugin
 {
     /** @var Layout */
     protected $layout;
-
-    /**
-     * @var \Magento\Framework\App\State
-     */
-    protected $appState;
 
     /**
      * @var \Psr\Log\LoggerInterface
@@ -42,26 +40,49 @@ class LayoutPlugin
     protected $structure;
 
     /**
-     * @var int
+     * @var RequestInterface
      */
-    protected $rootPathLengthOffset;
+    protected $request;
+
+    /**
+     * @var AppState
+     */
+    protected $appState;
+
+    /**
+     * @var Config
+     */
+    private $config;
+
+    /**
+     * @var DirectoryList
+     */
+    private $directoryList;
 
 
     /**
      * LayoutPlugin constructor.
      *
-     * @param AppState $appState
-     * @param Logger   $logger
+     * @param Logger           $logger
+     * @param RequestInterface $request
+     * @param DirectoryList    $directoryList
+     * @param AppState         $appState
+     * @param Config           $config
+     *
+     * @internal param AppState $appState
      */
     public function __construct(
-        AppState $appState,
         Logger $logger,
-        \Magento\Framework\App\Filesystem\DirectoryList $directoryList
+        RequestInterface $request,
+        DirectoryList $directoryList,
+        AppState $appState,
+        Config $config
     ) {
-        $this->appState = $appState;
+        $this->request = $request;
         $this->logger = $logger;
-        $this->rootPathLengthOffset = strlen($directoryList->getRoot());
-
+        $this->config = $config;
+        $this->appState = $appState;
+        $this->directoryList = $directoryList;
     }
 
 
@@ -75,7 +96,7 @@ class LayoutPlugin
      */
     public function aroundRenderNonCachedElement(Layout $layout, Closure $procede, $name)
     {
-        if ($this->appState->getMode() !== AppState::MODE_DEVELOPER) {
+        if ($this->config->isHintEnabled() === false) {
             return $procede($name);
         }
         $this->layout = $layout;
@@ -206,12 +227,12 @@ class LayoutPlugin
      * @todo alias
      *       cache lifetime, cached, not cached.
      *
-     * @param \Magento\Framework\View\Element\Template $block
-     *
+     * @param $name
      * @return string
      */
     protected function _getBlockInfo($name)
     {
+        /** @var \Magento\Framework\View\Element\AbstractBlock $block */
         $block = $this->layout->getBlock($name);
 
 //        $childNames = $block->getParentBlock()->getChildNames();
@@ -219,12 +240,27 @@ class LayoutPlugin
 
         $result = json_encode([
             'name' => addslashes($block->getNameInLayout()),
-            'templateFile' => substr($block->getTemplateFile(), $this->rootPathLengthOffset),
+            'templateFile' => $this->_getBlockTemplatePath($block),
             'moduleName' => $block->getModuleName(),
             'class' => addslashes(get_class($block)),
             'cache' => ['keyInfo' => $block->getCacheKeyInfo()],
         ], JSON_UNESCAPED_SLASHES);
 
         return $result;
+    }
+
+
+    /**
+     * @param $block
+     *
+     * @return null
+     */
+    protected function _getBlockTemplatePath(\Magento\Framework\View\Element\AbstractBlock $block)
+    {
+        if (! $block instanceof \Magento\Framework\View\Element\Template) {
+            return null;
+        }
+
+        return substr($block->getTemplateFile(), strlen($this->directoryList->getRoot()));
     }
 }

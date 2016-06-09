@@ -2,6 +2,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 
     <type name="Magento\Framework\View\Layout">
-        <plugin sortOrder="1" name="hoTemplateHintsLayout" type="Ho\TemplateHints\Plugin\View\LayoutPlugin" />
+        <plugin sortOrder="1" name="hoTemplatehintsLayout" type="Ho\Templatehints\Plugin\View\LayoutPlugin" />
     </type>
 </config>
