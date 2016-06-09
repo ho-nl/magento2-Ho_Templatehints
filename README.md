@@ -6,6 +6,8 @@ Ho_Templatehints extends the default Magento template hints.
 - Shows hints for **Templates**, **AbstractBlocks** (Blocks), **Containers** and **UI Components**.
 - No layout interference: Using css outline instead of borders of other HTML elements, so it doesn't f'up the layout.
 
+![Usage $0](docs/usage.gif)
+
 ## Installation
 
 todo
