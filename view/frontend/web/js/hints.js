@@ -1,7 +1,8 @@
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
+/**!
+ * Copyright (c) 2016 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
  */
+
 document.addEventListener("DOMContentLoaded", function(event) {
   require(['jquery'], function ($) {
     "use strict"

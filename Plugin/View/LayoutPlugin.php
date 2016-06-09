@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: paul
- * Date: 07-06-16
- * Time: 23:14
+ * Copyright (c) 2016 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
  */
 namespace Ho\Templatehints\Plugin\View;
 

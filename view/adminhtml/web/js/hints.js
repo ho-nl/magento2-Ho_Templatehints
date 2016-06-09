@@ -1,7 +1,8 @@
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
+/**!
+ * Copyright (c) 2016 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
+ * See LICENSE.txt for license details.
  */
+
 document.addEventListener("DOMContentLoaded", function(event) {
   require(['jquery'], function ($) {
     "use strict"
@@ -59,7 +60,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
         return
       }
 
-      var hintElem = $(this)
+      hint(this);
+
+      return false
+    })
+
+    window.hint = function(elem) {
+      var hintElem = $(elem)
       var hintData = hintElem.data('ho-hintdata');
       hintElem.removeAttr('data-ho-hintdata')
       var hintType = hintElem.data('ho-hinttype');
@@ -96,14 +103,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
             console.log(hintData[key]);
           })
           console.log(hintData['cache'])
-          console.log(this)
+          console.log(elem)
 
           console.groupEnd()
           break;
       }
-
-
-      return false
-    })
+    }
   })
 })
