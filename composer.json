@@ -1,33 +1,37 @@
 {
-    "name": "ho/module-templatehints",
-    "description": "",
-    "require": {
-        "php": "~5.5.0|~5.6.0|~7.0.0",
-
-        "magento/magento-composer-installer": "*"
-    },
-    "suggest": {
-
-    },
-    "type": "magento2-module",
-    "version": "0.1.0",
-    "license": [
-
-    ],
-    "autoload": {
-        "files": [
-            "registration.php"
-        ],
-        "psr-4": {
-            "Ho\\Templatehints\\": ""
-        }
-    },
-    "extra": {
-        "map": [
-            [
-                "*",
-                "Ho/Templatehints"
-            ]
-        ]
+  "name": "ho/module-templatehints",
+  "description": "H&O Magento 2 Advanced Template Hints module",
+  "homepage": "https://github.com/ho-nl/magento2-Ho_Templatehints",
+  "authors": [
+    {
+      "name": "Paul Hachmang - H&O",
+      "email": "paul@h-o.nl"
     }
+  ],
+  "require": {
+    "php": "~5.5.0|~5.6.0|~7.0.0",
+    "magento/magento-composer-installer": "*"
+  },
+  "suggest": {
+  },
+  "type": "magento2-module",
+  "version": "0.1.0",
+  "license": [
+  ],
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Ho\\Templatehints\\": ""
+    }
+  },
+  "extra": {
+    "map": [
+      [
+        "*",
+        "Ho/Templatehints"
+      ]
+    ]
+  }
 }

@@ -1,4 +1,4 @@
-# Magento 2 Advanced Template Hints module
+# H&O Magento 2 Advanced Template Hints module
 
 Ho_Templatehints extends the default Magento template hints.
 
@@ -10,7 +10,8 @@ Ho_Templatehints extends the default Magento template hints.
 
 ## Installation
 
-todo
+php bin/magento module:enable Ho_Templatehints
+php bin/magento setup:upgrade
 
 ## Usage
 1. Set your Magento 2 installation to developer mode.
@@ -30,8 +31,6 @@ hint($0)
 
 ![Console $0](docs/console.gif)
 
-## Todo
-Show hints directly from the console in the devtools.
 
 ## Inner Workings
 The module adds an additional html-attribute to the outer most element of a layout element.
