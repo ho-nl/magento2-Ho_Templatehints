@@ -19,7 +19,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
         var hintElem = $(this);
         var hintType = hintElem.data('ho-hinttype');
         hintElem.removeAttr('data-ho-hinttype');
-        
+
+        hintElem.data('ho-hintdata');
+        hintElem.removeAttr('data-ho-hintdata')
+
         hintElem.addClass('ho-hint')
                 .addClass('ho-hint-outline')
                 .addClass('ho-hint-'+hintType)
