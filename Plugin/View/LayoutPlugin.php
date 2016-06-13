@@ -133,6 +133,12 @@ class LayoutPlugin
         if (!$html) {
             return $html;
         }
+//        $document = new \DOMDocument();
+//        $document->loadHTML($html);
+
+//        $elements = $document->getElementsByTagName('body');
+//        var_dump($html, $document->saveHTML());exit;
+//        var_dump($document);exit;
 
         $htmlAttr = [];
         foreach ($attributes as $key => $value) {
