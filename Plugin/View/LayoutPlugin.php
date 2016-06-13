@@ -64,11 +64,11 @@ class LayoutPlugin
      * @param Closure $proceed
      * @param string  $name
      * @param bool    $useCache
+     *
      * @return string
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function aroundRenderElement(
-        /** @noinspection PhpUnusedParameterInspection */
-        Layout $layout, Closure $proceed, $name, $useCache = false)
+    public function aroundRenderElement(Layout $layout, Closure $proceed, $name, $useCache = false)
     {
         $result = $proceed($name, $useCache);
         if ($this->hintConfig->isHintEnabled() === false) {
@@ -77,9 +77,10 @@ class LayoutPlugin
         return $this->_docorateElement($result, $name);
     }
 
+
     /**
-     * @param Layout $layout
-     * @param        $name
+     * @param string $result
+     * @param string $name
      *
      * @return string
      */
@@ -90,7 +91,7 @@ class LayoutPlugin
         }
 
         if ($this->layout->isUiComponent($name)) {
-            $result = $this->_decorateOuterElement(
+            $result = $this->decorateOuterElement(
                 $result,
                 [
                     'data-ho-hinttype' => 'ui-container',
@@ -98,15 +99,15 @@ class LayoutPlugin
                 ]
             );
         } elseif ($this->layout->isBlock($name)) {
-            $result = $this->_decorateOuterElement(
+            $result = $this->decorateOuterElement(
                 $result,
                 [
                     'data-ho-hinttype' => 'block',
                     'data-ho-hintdata' => $this->_getBlockInfo($name)
                 ]
             );
-        } elseif($this->layout->isContainer($name)) {
-            $result = $this->_decorateOuterElement(
+        } elseif ($this->layout->isContainer($name)) {
+            $result = $this->decorateOuterElement(
                 $result,
                 [
                     'data-ho-hinttype' => 'container',
@@ -125,23 +126,23 @@ class LayoutPlugin
      * @param array $attributes
      *
      * @return string
-     * @internal param string $blockHtml
      */
-    protected function _decorateOuterElement($html, $attributes)
+    public function decorateOuterElement($html, $attributes)
     {
+
         if (!$html) {
             return $html;
         }
 
         $htmlAttr = [];
         foreach ($attributes as $key => $value) {
-            $htmlAttr[] = sprintf('%s=\'%s\'', $key, $value);
+            $htmlAttr[] = sprintf('%s="%s"', $key, htmlspecialchars($value));
         }
         $htmlAttr = implode(' ', $htmlAttr);
 
         $html = preg_replace(
             '/(<\b[^><]*)>/i',
-            '$1 '.$htmlAttr.'>',
+            '$1'.($htmlAttr ? ' '.$htmlAttr : '').'>',
             $html,
             1
         );
@@ -182,7 +183,7 @@ class LayoutPlugin
 
 //        $childNames = $block->getParentBlock()->getChildNames();
 //        var_dump($childNames);exit;
-        
+
         $result = json_encode([
             'name' => addslashes($block->getNameInLayout()),
             'templateFile' => $this->_getBlockTemplatePath($block),
