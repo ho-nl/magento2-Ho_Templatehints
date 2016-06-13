@@ -6,51 +6,31 @@
 namespace Ho\Templatehints\Plugin\View;
 
 use Closure;
-use Ho\Templatehints\Helper\Config;
+use Ho\Templatehints\Helper\Config as HintConfig;
 use Magento\Framework\App\Filesystem\DirectoryList;
-use Magento\Framework\App\State as AppState;
 use Magento\Framework\View\Layout;
-use Psr\Log\LoggerInterface as Logger;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\App\RequestInterface;
+use Magento\Framework\View\Layout\Data\Structure;
 
 /**
- * Plugin to wrap all the rendered elements
- * 
+ * When a block is rendered
+ *
  * Class LayoutPlugin
  * @package Ho\Templatehints\Plugin\View
  */
 class LayoutPlugin
 {
-    /** @var Layout */
-    protected $layout;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var Layout
      */
-    protected $logger;
+    protected $layout;
 
     /**
      * Layout structure model
      *
-     * @var Layout\Data\Structure
+     * @var Structure
      */
     protected $structure;
-
-    /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var AppState
-     */
-    protected $appState;
-
-    /**
-     * @var Config
-     */
-    private $config;
 
     /**
      * @var DirectoryList
@@ -61,58 +41,41 @@ class LayoutPlugin
     /**
      * LayoutPlugin constructor.
      *
-     * @param Logger           $logger
-     * @param RequestInterface $request
-     * @param DirectoryList    $directoryList
-     * @param AppState         $appState
-     * @param Config           $config
-     *
-     * @internal param AppState $appState
+     * @param DirectoryList $directoryList
+     * @param HintConfig    $hintConfig
+     * @param Structure     $structure
+     * @param Layout        $layout
      */
     public function __construct(
-        Logger $logger,
-        RequestInterface $request,
         DirectoryList $directoryList,
-        AppState $appState,
-        Config $config
+        HintConfig $hintConfig,
+        Structure $structure,
+        Layout $layout
     ) {
-        $this->request = $request;
-        $this->logger = $logger;
-        $this->config = $config;
-        $this->appState = $appState;
+        $this->hintConfig = $hintConfig;
         $this->directoryList = $directoryList;
+        $this->structure = $structure;
+        $this->layout = $layout;
     }
 
 
     /**
-     * @param Layout $layout
-     * @param Closure                       $procede
-     * @param                                $name
-     *
+     * @param Layout  $layout
+     * @param Closure $proceed
+     * @param string  $name
+     * @param bool    $useCache
      * @return string
-     * @throws \Exception
      */
-    public function aroundRenderNonCachedElement(Layout $layout, Closure $procede, $name)
+    public function aroundRenderElement(
+        /** @noinspection PhpUnusedParameterInspection */
+        Layout $layout, Closure $proceed, $name, $useCache = false)
     {
-        if ($this->config->isHintEnabled() === false) {
-            return $procede($name);
+        $result = $proceed($name, $useCache);
+        if ($this->hintConfig->isHintEnabled() === false) {
+            return $result;
         }
-        $this->layout = $layout;
-
-
-        $result = '';
-        try {
-            $result = $this->_renderElement($layout, $name);
-        } catch (\Exception $e) {
-            if ($this->appState->getMode() === AppState::MODE_DEVELOPER) {
-                throw $e;
-            }
-            $message = ($e instanceof LocalizedException) ? $e->getLogMessage() : $e->getMessage();
-            $this->logger->critical($message);
-        }
-        return $result;
+        return $this->_docorateElement($result, $name);
     }
-
 
     /**
      * @param Layout $layout
@@ -120,34 +83,21 @@ class LayoutPlugin
      *
      * @return string
      */
-    protected function _renderElement(Layout $layout, $name)
+    protected function _docorateElement($result, $name)
     {
-        $reflectionClass = new \ReflectionClass(Layout::CLASS);
+        if (! $result) {
+            $result = '<div style="display:none;"></div>';
+        }
 
-        $structure = $reflectionClass->getProperty('structure');
-        $structure->setAccessible(true);
-        $this->structure = $structure->getValue($layout);
-
-        $renderUiComponent = $reflectionClass->getMethod('_renderUiComponent');
-        $renderUiComponent->setAccessible(true);
-
-        $renderBlock = $reflectionClass->getMethod('_renderBlock');
-        $renderBlock->setAccessible(true);
-
-        $renderContainer = $reflectionClass->getMethod('_renderContainer');
-        $renderContainer->setAccessible(true);
-
-        if ($layout->isUiComponent($name)) {
-            $result = $renderUiComponent->invoke($layout, $name);
-            $result = $this->_decorateOuterElement($result,
+        if ($this->layout->isUiComponent($name)) {
+            $result = $this->_decorateOuterElement(
+                $result,
                 [
                     'data-ho-hinttype' => 'ui-container',
                     'data-ho-hintdata' => $this->_getBlockInfo($name)
                 ]
             );
-            return $result;
-        } elseif ($layout->isBlock($name)) {
-            $result = $renderBlock->invoke($layout, $name);
+        } elseif ($this->layout->isBlock($name)) {
             $result = $this->_decorateOuterElement(
                 $result,
                 [
@@ -155,9 +105,7 @@ class LayoutPlugin
                     'data-ho-hintdata' => $this->_getBlockInfo($name)
                 ]
             );
-            return $result;
-        } elseif($layout->isContainer($name)) {
-            $result = $renderContainer->invoke($layout, $name);
+        } elseif($this->layout->isContainer($name)) {
             $result = $this->_decorateOuterElement(
                 $result,
                 [
@@ -165,8 +113,8 @@ class LayoutPlugin
                     'data-ho-hintdata' => $this->_getContainerInfo($name)
                 ]
             );
-            return $result;
         }
+        return $result;
     }
 
 
@@ -222,8 +170,7 @@ class LayoutPlugin
     /**
      * Returns the blockInfo as a json encoded array
      *
-     * @todo alias
-     *       cache lifetime, cached, not cached.
+     * @todo alias, cache lifetime, cached, not cached.
      *
      * @param $name
      * @return string
@@ -235,7 +182,7 @@ class LayoutPlugin
 
 //        $childNames = $block->getParentBlock()->getChildNames();
 //        var_dump($childNames);exit;
-
+        
         $result = json_encode([
             'name' => addslashes($block->getNameInLayout()),
             'templateFile' => $this->_getBlockTemplatePath($block),
