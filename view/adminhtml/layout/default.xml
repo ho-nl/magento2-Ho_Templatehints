@@ -8,7 +8,7 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name='root'>
-            <block class='Ho\Templatehints\Block\Hints\Js' name='ho.templatehints' />
+            <block class='Ho\Templatehints\Block\Hints\Init' name='ho.templatehints' />
         </referenceContainer>
     </body>
 </page>
