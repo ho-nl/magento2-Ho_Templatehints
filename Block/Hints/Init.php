@@ -34,20 +34,18 @@ class Init extends AbstractBlock
 
     /**
      * @param Context         $context
-     * @param AssetRepository $assetRepository
      * @param AssetCollection $assetCollection
      * @param Config          $config
      * @param array           $data
      */
     public function __construct(
         Context $context,
-        AssetRepository $assetRepository,
         AssetCollection $assetCollection,
         Config $config,
         array $data = []
     ) {
         if ($config->isHintEnabled()) {
-            $this->assetRepository = $assetRepository;
+            $this->assetRepository = $context->getAssetRepository();
             $this->assetCollection = $assetCollection;
             $this->addAssets();
         }
