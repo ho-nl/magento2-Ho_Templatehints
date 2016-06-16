@@ -21,6 +21,8 @@ class LayoutPlugin
 {
 
     /**
+     * Layout model
+     *
      * @var Layout
      */
     protected $layout;
@@ -33,6 +35,8 @@ class LayoutPlugin
     protected $structure;
 
     /**
+     * Magento directory listing
+     *
      * @var DirectoryList
      */
     private $directoryList;

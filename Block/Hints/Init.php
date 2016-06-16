@@ -8,7 +8,6 @@ namespace Ho\Templatehints\Block\Hints;
 
 use Ho\Templatehints\Helper\Config;
 use Magento\Framework\View\Asset\GroupedCollection as AssetCollection;
-use Magento\Framework\View\Asset\Repository as AssetRepository;
 use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
 
@@ -21,7 +20,7 @@ class Init extends AbstractBlock
 {
     /**
      * A repository service for view assets
-     * @var AssetRepository
+     * @var \Magento\Framework\View\Asset\Repository
      */
     protected $assetRepository;
 
@@ -33,6 +32,8 @@ class Init extends AbstractBlock
 
 
     /**
+     * Constructor
+     *
      * @param Context         $context
      * @param AssetCollection $assetCollection
      * @param Config          $config
@@ -59,6 +60,8 @@ class Init extends AbstractBlock
      *
      * @todo figure out how to include .less files instead of .css files for easier syntax.
      * http://devdocs.magento.com/guides/v2.0/architecture/view/page-assets.html#m2devgde-page-assets-api
+     *
+     * @return void
      */
     public function addAssets()
     {
