@@ -197,6 +197,7 @@ class LayoutPlugin
         $result = json_encode([
             'name' => addslashes($block->getNameInLayout()),
             'templateFile' => $this->_getBlockTemplatePath($block),
+            'absolutePath' => $block->getTemplateFile(),
             'moduleName' => $block->getModuleName(),
             'class' => addslashes(get_class($block)),
             'cache' => ['keyInfo' => $block->getCacheKeyInfo()],

@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     })
 
 
-    $(document).on('mouseout', '.ho-hint', function(event){
+    $(document).on('mouseout', '.ho-hint', function(event){  
       if (!event.shiftKey) {
         return
       }
@@ -106,10 +106,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
             console.log(hintData[key]);
           })
           console.log(hintData['cache'])
+          console.log('http://localhost:63342/api/file/'+hintData['absolutePath']);
           console.log(elem)
 
           console.groupEnd()
           break;
+      }
+    }
+
+    window.openTemplate = function(elem) {
+      var hintElem = $(elem)
+      var hintData = hintElem.data('ho-hintdata');
+      hintElem.removeAttr('data-ho-hintdata')
+
+      if (hintData['absolutePath']) {
+        $.get('http://localhost:63342/api/file/'+hintData['absolutePath']);
       }
     }
   })
