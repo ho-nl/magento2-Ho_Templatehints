@@ -17,15 +17,6 @@ php bin/magento setup:upgrade
 ```
 
 ### Development installation (git enabled)
-Add the following to your composer.json file in Magento's root (repositories might already exists)
-```JSON
-"repositories": [
-    {
-        "type": "vcs",
-        "url": "git@github.com:ho-nl/magento2-Ho_Templatehints.git"
-    }
-],
-```
 
 ```
 composer require ho-nl/magento2-templatehints "dev-master"
