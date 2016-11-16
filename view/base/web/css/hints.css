@@ -14,11 +14,15 @@
     outline: 0 dashed hsl(195, 100%, 50%);
 }
 .ho-hint-block.ho-hint-hover {
-    background-color: hsla(195, 100%, 50%, 0.1);
+    /*background-color: hsla(195, 100%, 50%, 0.1);*/
 }
 
-.ho-hint-ui-component {
+.ho-hint-ui-component, .ho-hint-knockout {
     outline: 0 dashed hsl(269, 50%, 40%);
+}
+.ho-hint-ui-component.ho-hint-hover,
+.ho-hint-knockout.ho-hint-hover {
+    /*background-color: hsla(269, 50%, 40%, 0.1);*/
 }
 
 .ho-hint-outline {
