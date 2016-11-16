@@ -27,8 +27,20 @@ document.addEventListener("DOMContentLoaded", function (event) {
                     .addClass('ho-hint-' + hintType)
             });
 
+            $('*').each(function(){
+                var knockoutData = ko.dataFor(this)
+                if (!knockoutData) {
+                    return
+                }
 
+                var elem = $(this);
+                var parentKnockoutData = ko.dataFor(this.parentElement);
+                if (parentKnockoutData && knockoutData.component == parentKnockoutData.component) {
+                    return;
+                }
 
+                elem.addClass('ho-hint ho-hint-outline ho-hint-knockout')
+                elem.data('ho-hinttype', 'knockout')
 
             });
         })
@@ -80,6 +92,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
             hintElem.removeAttr('data-ho-hinttype')
 
             if (hintType == 'knockout') {
+                var knockoutData = ko.dataFor(elem);
+
+                var script = $(`[data-requiremodule="${knockoutData.component}"]`)[0];
+                if (script) {
+                    var url = script.src;
+                    url = url.slice(url.indexOf('pub/'));
+                }
+
+                hintData = {
+                    info: [
+                        knockoutData.name ? knockoutData.name : knockoutData.code,
+                        knockoutData.component
+                    ],
+                    paths: {
+                        'template': url
+                    },
+                    extra: {
+                        'knockout': knockoutData
+                    }
+                }
             } else if (typeof hintData != 'object') {
                 console.log('can not parse as json', hintData)
                 return
@@ -89,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 'block': 'background-color: hsl(195, 100%, 50%); padding:3px 6px; color:#fff; font-weight:bold;',
                 'container': 'background-color: darkorange; padding:3px 6px; color:#fff; font-weight:bold;',
                 'ui-component': 'background-color: hsl(269, 50%, 40%); padding:3px 6px; color:#fff; font-weight:bold;',
+                'knockout': 'background-color: hsl(269, 50%, 40%); padding:3px 6px; color:#fff; font-weight:bold;',
             }
 
             console.groupCollapsed(
