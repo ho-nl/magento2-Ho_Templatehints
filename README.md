@@ -24,6 +24,10 @@ php bin/magento module:enable Ho_Templatehints
 php bin/magento setup:upgrade
 ```
 
+### Configure PHPStorm, allow remote calls
+
+![Setting up PHPStorm](docs/phpstorm-config.png)
+
 ## Usage
 1. Set your Magento 2 installation to developer mode.
 2. Add `?ath=1` to your URL to activate.
