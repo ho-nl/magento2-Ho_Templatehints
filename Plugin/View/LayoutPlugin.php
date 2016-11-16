@@ -25,14 +25,7 @@ class LayoutPlugin
      *
      * @var Layout
      */
-    protected $layout;
-
-    /**
-     * Layout structure model
-     *
-     * @var Structure
-     */
-    protected $structure;
+    private $layout;
 
     /**
      * Magento directory listing
@@ -41,27 +34,32 @@ class LayoutPlugin
      */
     private $directoryList;
 
+    /**
+     * @var Structure
+     */
+    private $structure;
 
     /**
      * LayoutPlugin constructor.
      *
      * @param DirectoryList $directoryList
      * @param HintConfig    $hintConfig
-     * @param Structure     $structure
      * @param Layout        $layout
      */
     public function __construct(
         DirectoryList $directoryList,
         HintConfig $hintConfig,
-        Structure $structure,
         Layout $layout
     ) {
         $this->hintConfig = $hintConfig;
         $this->directoryList = $directoryList;
-        $this->structure = $structure;
         $this->layout = $layout;
-    }
 
+        $layoutReflection = new \ReflectionClass($this->layout);
+        $structureProp = $layoutReflection->getProperty('structure');
+        $structureProp->setAccessible(true);
+        $this->structure = $structureProp->getValue($this->layout);
+    }
 
     /**
      * @param Layout  $layout
@@ -72,15 +70,14 @@ class LayoutPlugin
      * @return string
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function aroundRenderElement(Layout $layout, Closure $proceed, $name, $useCache = false)
+    public function aroundRenderElement(Layout $layout, Closure $proceed, $name, $useCache = false) // @codingStandardsIgnoreLine
     {
         $result = $proceed($name, $useCache);
         if ($this->hintConfig->isHintEnabled() === false) {
             return $result;
         }
-        return $this->_docorateElement($result, $name);
+        return $this->_decorateElement($result, $name);
     }
-
 
     /**
      * @param string $result
@@ -88,42 +85,32 @@ class LayoutPlugin
      *
      * @return string
      */
-    protected function _docorateElement($result, $name)
+    private function _decorateElement($result, $name)
     {
         if (! $result) {
             $result = '<div style="display:none;"></div>';
         }
 
         if ($this->layout->isUiComponent($name)) {
-            $result = $this->decorateOuterElement(
-                $result,
-                [
-                    'data-ho-hinttype' => 'ui-container',
-                    'data-ho-hintdata' => $this->_getBlockInfo($name)
-                ]
-            );
+            /** @var \Magento\Framework\View\Element\AbstractBlock $block */
+            $block = $this->layout->getBlock($name);
+            $result = $this->decorateOuterElement($result, [
+                'data-ho-hinttype' => 'ui-container',
+                'data-ho-hintdata' => $this->getBlockInfo($block)
+            ]);
         } elseif ($this->layout->isBlock($name)) {
-            $result = $this->decorateOuterElement(
-                $result,
-                [
-                    'data-ho-hinttype' => 'block',
-                    'data-ho-hintdata' => $this->_getBlockInfo($name)
-                ]
-            );
+            $result = $this->decorateOuterElement($result, [
+                'data-ho-hinttype' => 'block',
+                'data-ho-hintdata' => $this->getBlockInfo($this->layout->getBlock($name))
+            ]);
         } elseif ($this->layout->isContainer($name)) {
-            $result = $this->decorateOuterElement(
-                $result,
-                [
-                    'data-ho-hinttype' => 'container',
-                    'data-ho-hintdata' => $this->_getContainerInfo($name)
-                ]
-            );
+            $result = $this->decorateOuterElement($result, [
+                'data-ho-hinttype' => 'container',
+                'data-ho-hintdata' => $this->getContainerInfo($name, $this->structure->getElement($name))
+            ]);
         }
         return $result;
     }
-
-
-
 
     /**
      * @param string $html
@@ -137,12 +124,6 @@ class LayoutPlugin
         if (!$html) {
             return $html;
         }
-//        $document = new \DOMDocument();
-//        $document->loadHTML($html);
-
-//        $elements = $document->getElementsByTagName('body');
-//        var_dump($html, $document->saveHTML());exit;
-//        var_dump($document);exit;
 
         $htmlAttr = [];
         foreach ($attributes as $key => $value) {
@@ -159,65 +140,103 @@ class LayoutPlugin
         return $html;
     }
 
-
     /**
-     * @param $name
+     * @param string $nameInLayout
+     * @param [] $container
+     *
      * @return string
      */
-    protected function _getContainerInfo($name)
+    private function getContainerInfo(string $nameInLayout, array $container)
     {
-        $element = $this->structure->getElement($name);
-
-        $result = json_encode(array_filter([
-            'name' => addslashes($name),
-            'children' => isset($element['children']) ? array_values($element['children']) : null,
-            'parent' => isset($containerInfo['parent']) ? $containerInfo['parent'] : null
-        ]), JSON_UNESCAPED_SLASHES);
+        $result = self::filterEscapeEncode([
+            'info' => [
+                'nameInLayout' => $nameInLayout,
+                'label' => $container['label'] ?? null
+            ],
+            'extra' => [
+                'parent' => $container['parent'] ?? null,
+                'children' => isset($container['children']) ? array_values($container['children']) : null,
+            ]
+        ]);
 
         return $result;
     }
-
 
     /**
      * Returns the blockInfo as a json encoded array
      *
-     * @todo alias, cache lifetime, cached, not cached.
-     *
-     * @param $name
+     * @param \Magento\Framework\View\Element\AbstractBlock $block
      * @return string
      */
-    protected function _getBlockInfo($name)
+    private function getBlockInfo(\Magento\Framework\View\Element\AbstractBlock $block)
     {
-        /** @var \Magento\Framework\View\Element\AbstractBlock $block */
-        $block = $this->layout->getBlock($name);
-
-//        $childNames = $block->getParentBlock()->getChildNames();
-//        var_dump($childNames);exit;
-
-        $result = json_encode([
-            'name' => addslashes($block->getNameInLayout()),
-            'templateFile' => $this->_getBlockTemplatePath($block),
-            'absolutePath' => $block->getTemplateFile(),
-            'moduleName' => $block->getModuleName(),
-            'class' => addslashes(get_class($block)),
-            'cache' => ['keyInfo' => $block->getCacheKeyInfo()],
-        ], JSON_UNESCAPED_SLASHES);
+        $result = self::filterEscapeEncode([
+            'info' => [
+                'nameInLayout' => $block->getNameInLayout(),
+                'moduleName' => $block->getModuleName(),
+                'phpClass' => $this->getBlockClass($block),
+            ],
+            'extra' => [
+                'cacheKeyInfo' => $block->getCacheKeyInfo()
+            ],
+            'paths' => [
+                'template' => $block->getTemplateFile(),
+            ] + $this->getBlockPaths($block)
+        ]);
 
         return $result;
     }
 
+    /**
+     * @param array $data
+     *
+     * @return string
+     */
+    public static function filterEscapeEncode(array $data)
+    {
+        return json_encode(self::filterEscape($data));
+    }
 
     /**
-     * @param $block
-     *
-     * @return null
+     * Filter and escape the complete array
+     * @param $data
+     * @return array
      */
-    protected function _getBlockTemplatePath(\Magento\Framework\View\Element\AbstractBlock $block)
+    private static function filterEscape($data)
     {
-        if (! $block instanceof \Magento\Framework\View\Element\Template) {
-            return null;
+        return array_filter(array_map(function ($elem) {
+            if (is_array($elem)) {
+                return self::filterEscape($elem);
+            }
+            return addslashes($elem); // @codingStandardsIgnoreLine
+        }, $data));
+    }
+
+    /**
+     * @param \Magento\Framework\View\Element\AbstractBlock $block
+     *
+     * @return string[string]
+     */
+    private function getBlockPaths(\Magento\Framework\View\Element\AbstractBlock $block)
+    {
+        $reflector     = new \ReflectionClass($block); //@codingStandardsIgnoreLine
+        $classFileName = $reflector->getFileName();
+
+        if ($block instanceof \Magento\Framework\Interception\InterceptorInterface) {
+            $classFileName = $reflector->getParentClass()->getFileName();
         }
 
-        return substr($block->getTemplateFile(), strlen($this->directoryList->getRoot()));
+        return ['class' => $classFileName];
+    }
+
+    private function getBlockClass(\Magento\Framework\View\Element\AbstractBlock $block)
+    {
+        $className = get_class($block);
+
+        if ($block instanceof \Magento\Framework\Interception\InterceptorInterface) {
+            $reflector = new \ReflectionClass($block); //@codingStandardsIgnoreLine
+            $className = $reflector->getParentClass()->getName();
+        }
+        return $className;
     }
 }

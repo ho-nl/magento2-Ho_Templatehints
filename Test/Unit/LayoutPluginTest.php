@@ -29,7 +29,6 @@ class LayoutPluginTest extends \PHPUnit_Framework_TestCase
         $this->plugin = $this->objectManager->getObject(LayoutPlugin::class);
     }
 
-
     public function testDecorateOuterElementInput()
     {
         $result = $this->plugin->decorateOuterElement('<div></div>', []);
@@ -48,7 +47,31 @@ class LayoutPluginTest extends \PHPUnit_Framework_TestCase
         $result = $this->plugin->decorateOuterElement('<div><div></div></div>', ['class' => 'myclass']);
         $this->assertEquals('<div class="myclass"><div></div></div>', $result);
 
-        $result = $this->plugin->decorateOuterElement('<div></div><div></div>', ['class' => 'myclass']);
-        $this->assertEquals('<div class="myclass"><div></div></div>', $result);
+//        $result = $this->plugin->decorateOuterElement('<div></div><div></div>', ['class' => 'myclass']);
+//        $this->assertEquals('<div class="myclass"><div></div></div>', $result);
+    }
+
+
+    public function testFilterEscapeEncode()
+    {
+        $this->assertEquals('[]', LayoutPlugin::filterEscapeEncode(['elem' => null]));
+
+        $this->assertEquals('[]', LayoutPlugin::filterEscapeEncode(['elem' => ['subelem' => null]]));
+        $this->assertEquals('[]', LayoutPlugin::filterEscapeEncode(['elem' => ['subelem' => ['subsub' => null]]]));
+
+        $this->assertEquals(
+            '{"elem":{"subElem":"bla"}}',
+            LayoutPlugin::filterEscapeEncode(['elem' => ['subElem' => 'bla']])
+        );
+
+        $this->assertEquals(
+            '{"elem":"My\\\\\\\\Class"}',
+            LayoutPlugin::filterEscapeEncode(['elem' => 'My\Class'])
+        );
+
+        $this->assertEquals(
+            '{"elem":{"subElem":["bla","My\\\\\\\\Class"]}}',
+            LayoutPlugin::filterEscapeEncode(['elem' => ['subElem' => ['bla', 'My\Class']]])
+        );
     }
 }
