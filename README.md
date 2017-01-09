@@ -2,7 +2,7 @@
 
 
 
-![Overview $0](docs/total-workings.gif)
+![Overview $0](docs/Total workings.gif)
 
 
 Ho_Templatehints extends the default Magento template hints.
