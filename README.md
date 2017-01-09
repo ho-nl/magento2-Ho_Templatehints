@@ -47,4 +47,9 @@ hint($0)
 The module adds an additional html-attribute to the outer most element of a layout element.
 
 ## Credits
-Of course heavily inspired by [Aoe_TemplateHints](https://github.com/AOEpeople/Aoe_TemplateHints) and a bit of love from H&O.
+Inspiration from [Aoe_TemplateHints](https://github.com/AOEpeople/Aoe_TemplateHints) and a lot of love from H&O.
+
+## Developer
+This module was developed by the H&O team. Check out more about this module on the H&O website:
+<a href="https://www.h-o.nl/blog/h-o-magento-2-advanced-template-hints-module">H&O Magento 2 Advanced Template hints module</a>
+
