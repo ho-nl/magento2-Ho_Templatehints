@@ -7,7 +7,7 @@
 
 Ho_Templatehints extends the default Magento template hints.
 
-- Easily accessible with with mussle memory `?ath=1`.
+- Easily accessible with with muscle memory `?ath=1`.
 - Shows hints for **Templates**, **AbstractBlocks** (Blocks), **Containers** and **UI Components**.
 - No layout interference: Using css outline instead of borders of other HTML elements, so it doesn't f'up the layout.
 
@@ -16,7 +16,7 @@ Ho_Templatehints extends the default Magento template hints.
 ## Installation
 
 ```
-composer require ho-nl/magento2-templatehints
+composer require honl/magento2-templatehints
 php bin/magento module:enable Ho_Templatehints
 php bin/magento setup:upgrade
 ```
@@ -24,10 +24,14 @@ php bin/magento setup:upgrade
 ### Development installation (git enabled)
 
 ```
-composer require ho-nl/magento2-templatehints "dev-master"
+composer require honl/magento2-templatehints "dev-master"
 php bin/magento module:enable Ho_Templatehints
 php bin/magento setup:upgrade
 ```
+
+### Configure PHPStorm, allow remote calls
+
+![Setting up PHPStorm](docs/phpstorm-config.png)
 
 ## Usage
 1. Set your Magento 2 installation to developer mode.
