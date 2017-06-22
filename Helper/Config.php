@@ -1,39 +1,68 @@
 <?php
 /**
- * Copyright (c) 2016 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
+ * Copyright © 2017 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
  * See LICENSE.txt for license details.
  */
 
 namespace Ho\Templatehints\Helper;
 
+use Magento\Developer\Helper\Data as DeveloperHelper;
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\State as AppState;
+use Magento\Store\Model\StoreManagerInterface;
 
-class Config extends AbstractHelper {
-
-    /**
-     * @var AppState
-     */
+class Config extends AbstractHelper
+{
+    /** @var AppState $appState */
     private $appState;
 
+    /** @var StoreManagerInterface $storeManager */
+    private $storeManager;
 
-    public function __construct(Context $context, AppState $appState)
-    {
-        parent::__construct($context);
-        $this->appState = $appState;
-    }
-
+    /** @var DeveloperHelper $developerHelper */
+    private $developerHelper;
 
     /**
-     * Check if the hints can be displayed, depends on the developer mode and if the url parameter is present.
+     * @param Context               $context
+     * @param AppState              $appState
+     * @param StoreManagerInterface $storeManager
+     * @param DeveloperHelper       $developerHelper
+     */
+    public function __construct(
+        Context $context,
+        AppState $appState,
+        StoreManagerInterface $storeManager,
+        DeveloperHelper $developerHelper
+    ) {
+        parent::__construct($context);
+
+        $this->appState = $appState;
+        $this->storeManager = $storeManager;
+        $this->developerHelper = $developerHelper;
+    }
+
+    /**
+     * Check if the hints can be displayed.
+     *
+     * It will check if the url parameter is present.
+     * For production mode it will also check if the IP-address is in Developer Client Restrictions.
      *
      * @return bool
      */
     public function isHintEnabled()
     {
-        $isDeveloperMode = $this->appState->getMode() === AppState::MODE_DEVELOPER;
         $isParamPresent = $this->_request->getParam('ath', false) === '1';
-        return $isDeveloperMode && $isParamPresent;
+
+        if ($isParamPresent) {
+            $applicationMode = $this->appState->getMode();
+            $storeId = $this->storeManager->getStore()->getId();
+
+            if ($applicationMode === AppState::MODE_DEVELOPER || $this->developerHelper->isDevAllowed($storeId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

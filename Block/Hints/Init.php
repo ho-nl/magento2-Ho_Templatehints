@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (c) 2016 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
+ * Copyright © 2017 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
  * See LICENSE.txt for license details.
  */
 
@@ -12,39 +12,32 @@ use Magento\Framework\View\Element\AbstractBlock;
 use Magento\Framework\View\Element\Context;
 
 /**
- * 
- *
  * @package Ho\Templatehints\Block\Hints
  */
 class Init extends AbstractBlock
 {
     /**
-     * A repository service for view assets
-     * @var \Magento\Framework\View\Asset\Repository
-     */
-    protected $assetRepository;
-
-    /**
-     * List of page assets that combines into groups ones having the same properties
-     * @var AssetCollection
-     */
-    protected $assetCollection;
-
-
-    /**
-     * Constructor
+     * A repository service for view assets.
      *
+     * @var \Magento\Framework\View\Asset\Repository $assetRepository
+     */
+    private $assetRepository;
+
+    /**
+     * List of page assets that combines into groups ones having the same properties.
+     *
+     * @var AssetCollection $assetCollection
+     */
+    private $assetCollection;
+
+    /**
      * @param Context         $context
      * @param AssetCollection $assetCollection
      * @param Config          $config
      * @param array           $data
      */
-    public function __construct(
-        Context $context,
-        AssetCollection $assetCollection,
-        Config $config,
-        array $data = []
-    ) {
+    public function __construct(Context $context, AssetCollection $assetCollection, Config $config, array $data = [])
+    {
         if ($config->isHintEnabled()) {
             $this->assetRepository = $context->getAssetRepository();
             $this->assetCollection = $assetCollection;
@@ -53,7 +46,6 @@ class Init extends AbstractBlock
 
         return parent::__construct($context, $data);
     }
-
 
     /**
      * Add assets to the header required for the initialisation of the scripts
