@@ -1,8 +1,9 @@
 <?php
 /**
- * Copyright (c) 2016 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
+ * Copyright © 2017 H&O E-commerce specialisten B.V. (http://www.h-o.nl/)
  * See LICENSE.txt for license details.
  */
+
 namespace Ho\Templatehints\Plugin\View;
 
 use Closure;
@@ -12,36 +13,30 @@ use Magento\Framework\View\Layout;
 use Magento\Framework\View\Layout\Data\Structure;
 
 /**
- * When a block is rendered
+ * When a block is rendered.
  *
- * Class LayoutPlugin
  * @package Ho\Templatehints\Plugin\View
  */
 class LayoutPlugin
 {
-
     /**
-     * Layout model
+     * Layout model.
      *
-     * @var Layout
+     * @var Layout $layout
      */
     private $layout;
 
     /**
-     * Magento directory listing
+     * Magento directory listing.
      *
-     * @var DirectoryList
+     * @var DirectoryList $directoryList
      */
     private $directoryList;
 
-    /**
-     * @var Structure
-     */
+    /** @var Structure $structure */
     private $structure;
 
     /**
-     * LayoutPlugin constructor.
-     *
      * @param DirectoryList $directoryList
      * @param HintConfig    $hintConfig
      * @param Layout        $layout
@@ -51,8 +46,8 @@ class LayoutPlugin
         HintConfig $hintConfig,
         Layout $layout
     ) {
-        $this->hintConfig = $hintConfig;
         $this->directoryList = $directoryList;
+        $this->hintConfig = $hintConfig;
         $this->layout = $layout;
 
         $layoutReflection = new \ReflectionClass($this->layout);
@@ -76,6 +71,7 @@ class LayoutPlugin
         if ($this->hintConfig->isHintEnabled() === false) {
             return $result;
         }
+
         return $this->_decorateElement($result, $name);
     }
 
@@ -120,8 +116,7 @@ class LayoutPlugin
      */
     public function decorateOuterElement($html, $attributes)
     {
-
-        if (!$html) {
+        if (! $html) {
             return $html;
         }
 
@@ -137,12 +132,13 @@ class LayoutPlugin
             $html,
             1
         );
+
         return $html;
     }
 
     /**
      * @param string $nameInLayout
-     * @param [] $container
+     * @param array $container
      *
      * @return string
      */
@@ -198,8 +194,10 @@ class LayoutPlugin
     }
 
     /**
-     * Filter and escape the complete array
+     * Filter and escape the complete array.
+     *
      * @param $data
+     *
      * @return array
      */
     private static function filterEscape($data)
@@ -237,6 +235,7 @@ class LayoutPlugin
             $reflector = new \ReflectionClass($block); //@codingStandardsIgnoreLine
             $className = $reflector->getParentClass()->getName();
         }
+
         return $className;
     }
 }
