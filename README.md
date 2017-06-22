@@ -29,7 +29,7 @@ php bin/magento setup:upgrade
 ![Setting up PHPStorm](docs/phpstorm-config.png)
 
 ## Usage
-1. Set your Magento 2 installation to developer mode.
+1. Set your Magento 2 installation to developer mode (when in production mode make sure to add your IP-address in Developer Client Restrictions).
 2. Add `?ath=1` to your URL to activate.
 3. Open up your console in you Chrome/Firefox/Safari/~IE~ devtools.
 4. hold <kbd>⇧</kbd> (shift)
