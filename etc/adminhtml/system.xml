@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="dev" translate="label">
+            <group id="ho_template_hint" translate="label" type="text" sortOrder="29" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>H&amp;O Template Hints - PhpStorm Integration</label>
+                <field id="port" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Port</label>
+                    <comment>Port used on PhpStorm to open files on remote call. See Preferences > Build, Execution, Deployment > Debugger > Built-in server.</comment>
+                </field>
+                <field id="local" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Local Path</label>
+                    <comment>Web server local absolute path to Magento installation directory. Something like /var/www for example.</comment>
+                </field>
+                <field id="host" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Host Path</label>
+                    <comment>Host absolute path to Magento installation directory. Something like /Users/username/Sites/magento for example.</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

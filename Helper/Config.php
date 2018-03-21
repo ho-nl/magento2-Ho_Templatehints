@@ -6,11 +6,12 @@
 
 namespace Ho\Templatehints\Helper;
 
-use Magento\Developer\Helper\Data as DeveloperHelper;
-use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Framework\App\Helper\Context;
 use Magento\Framework\App\State as AppState;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Helper\AbstractHelper;
+use Magento\Developer\Helper\Data as DeveloperHelper;
 
 class Config extends AbstractHelper
 {
@@ -64,5 +65,20 @@ class Config extends AbstractHelper
         }
 
         return false;
+    }
+
+    /**
+     * Simply retrieves config values already stored within the system.
+     *
+     * @param string $field The path through the tree of configuration values, e.g., 'general/store_information/name'
+     * @return mixed
+     */
+    public function getConfigValue($field)
+    {
+        $storeId = $this->storeManager->getStore()->getId();
+
+        return $this->scopeConfig->getValue(
+            $field, ScopeInterface::SCOPE_STORE, $storeId
+        );
     }
 }

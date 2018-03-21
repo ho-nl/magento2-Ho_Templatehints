@@ -87,12 +87,20 @@ class LayoutPlugin
             $result = '<div style="display:none;"></div>';
         }
 
+        $result = $this->decorateOuterElement($result, [
+            'data-ho-hintconfig' => self::filterEscapeEncode([
+                'port' => $this->hintConfig->getConfigValue('dev/ho_template_hint/port'),
+                'mapping' => [
+                    'local' => $this->hintConfig->getConfigValue('dev/ho_template_hint/local'),
+                    'host' => $this->hintConfig->getConfigValue('dev/ho_template_hint/host')
+                ]
+            ])
+        ]);
+
         if ($this->layout->isUiComponent($name)) {
-            /** @var \Magento\Framework\View\Element\AbstractBlock $block */
-            $block = $this->layout->getBlock($name);
             $result = $this->decorateOuterElement($result, [
                 'data-ho-hinttype' => 'ui-container',
-                'data-ho-hintdata' => $this->getBlockInfo($block)
+                'data-ho-hintdata' => $this->getBlockInfo($this->layout->getBlock($name))
             ]);
         } elseif ($this->layout->isBlock($name)) {
             $result = $this->decorateOuterElement($result, [
@@ -105,6 +113,7 @@ class LayoutPlugin
                 'data-ho-hintdata' => $this->getContainerInfo($name, $this->structure->getElement($name))
             ]);
         }
+
         return $result;
     }
 

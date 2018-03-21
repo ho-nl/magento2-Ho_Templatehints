@@ -45,7 +45,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
             });
         })
 
-
         //Remove styles when no
         $(document).keyup(function (event) {
             if (event.shiftKey) {
@@ -55,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
             $('.ho-hint').removeClass('ho-hint-outline ho-hint-hover')
         })
 
-
         $(document).on('mouseover', '.ho-hint', function (event) {
             if (!event.shiftKey) {
                 return
@@ -64,7 +62,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
             $(this).addClass('ho-hint-hover')
         })
 
-
         $(document).on('mouseout', '.ho-hint', function (event) {
             if (!event.shiftKey) {
                 return
@@ -72,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             $(this).removeClass('ho-hint-hover')
         })
-
 
         $(document).on('click', '.ho-hint', function (event) {
             if (!event.shiftKey) {
@@ -85,20 +81,22 @@ document.addEventListener("DOMContentLoaded", function (event) {
         })
 
         window.hint = function (elem) {
-            var hintElem = $(elem)
+            var hintElem = $(elem);
+
+            var hintConfig = hintElem.data('ho-hintconfig');
+            hintElem.removeAttr('data-ho-hintconfig');
+            var port = hintConfig.port;
+            var pathNeedsMapping = !_.isEmpty(hintConfig.mapping.local) && !_.isEmpty(hintConfig.mapping.host);
+
             var hintData = hintElem.data('ho-hintdata');
-            hintElem.removeAttr('data-ho-hintdata')
+            hintElem.removeAttr('data-ho-hintdata');
+
             var hintType = hintElem.data('ho-hinttype');
-            hintElem.removeAttr('data-ho-hinttype')
+            hintElem.removeAttr('data-ho-hinttype');
 
             if (hintType == 'knockout') {
                 var knockoutData = ko.dataFor(elem);
-
                 var script = $(`[data-requiremodule="${knockoutData.component}"]`)[0];
-                if (script) {
-                    var url = script.src;
-                    url = url.slice(url.indexOf('pub/'));
-                }
 
                 hintData = {
                     info: [
@@ -106,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
                         knockoutData.component
                     ],
                     paths: {
-                        'template': url
+                        'template': script ? script.src.slice(script.src.indexOf('pub/')) : ''
                     },
                     extra: {
                         'knockout': knockoutData
@@ -129,12 +127,15 @@ document.addEventListener("DOMContentLoaded", function (event) {
                 hintTypeStyle[hintType]
             )
 
-            _.each(hintData.paths, function(string, pathType) {
+            _.each(hintData.paths, function(filepath, pathType) {
                 pathType = pathType.charAt(0).toUpperCase() + pathType.slice(1);
+                if (pathNeedsMapping) {
+                    filepath = filepath.replace(hintConfig.mapping.local, hintConfig.mapping.host);
+                }
                 console.log(
                     `%c${pathType}`,
                     "font-weight:bold",
-                    `http://localhost:63342/api/file/${string}`
+                    `http://localhost:${port}/api/file/${filepath}`
                 );
             });
 
@@ -150,16 +151,26 @@ document.addEventListener("DOMContentLoaded", function (event) {
             console.log(elem);
 
             console.groupEnd()
-        }
+        };
 
         window.openTemplate = function (elem) {
-            var hintElem = $(elem)
-            var hintData = hintElem.data('ho-hintdata');
-            hintElem.removeAttr('data-ho-hintdata')
+            var hintElem = $(elem);
 
-            if (hintData['absolutePath']) {
-                $.get('http://localhost:63342/api/file/' + hintData['absolutePath']);
+            var hintConfig = hintElem.data('ho-hintconfig');
+            hintElem.removeAttr('data-ho-hintconfig');
+            var port = hintConfig.port;
+            var pathNeedsMapping = !_.isEmpty(hintConfig.mapping.local) && !_.isEmpty(hintConfig.mapping.host);
+
+            var hintData = hintElem.data('ho-hintdata');
+            hintElem.removeAttr('data-ho-hintdata');
+
+            var filepath = hintData.absolutePath;
+            if (filepath) {
+                if (pathNeedsMapping) {
+                    filepath = filepath.replace(hintConfig.mapping.local, hintConfig.mapping.host);
+                }
+                $.get(`http://localhost:${port}/api/file/${filepath}`);
             }
-        }
+        };
     })
 })
