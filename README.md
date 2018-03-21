@@ -29,13 +29,17 @@ php bin/magento module:enable Ho_Templatehints
 php bin/magento setup:upgrade
 ```
 
-### PHPStorm Integration
+### PHPStorm Integration
 
 #### Configure PHPStorm, allow remote calls
 
 ![Setting up PHPStorm](docs/phpstorm-config.png)
 
 #### Tweak Magento configuration as you wish
+
+If you're running Magento with Vagrant or Docker, you're likely to wish to map the paths
+between your web server and your actual host where the files sit so you can open the right
+file with PHPStorm directly from the console.
 
 ![Tweak Magento config](docs/phpstorm-integration.png)
 
