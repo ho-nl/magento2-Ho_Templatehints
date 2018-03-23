@@ -85,8 +85,8 @@ document.addEventListener("DOMContentLoaded", function (event) {
 
             var hintConfig = hintElem.data('ho-hintconfig');
             hintElem.removeAttr('data-ho-hintconfig');
-            var port = hintConfig.port;
-            var pathNeedsMapping = !_.isEmpty(hintConfig.mapping.local) && !_.isEmpty(hintConfig.mapping.host);
+            var port = _.has(hintConfig, "port") ? hintConfig.port : '63342';
+            var pathNeedsMapping = _.has(hintConfig, "mapping") && _.has(hintConfig.mapping, "local") && _.has(hintConfig.mapping, "host");
 
             var hintData = hintElem.data('ho-hintdata');
             hintElem.removeAttr('data-ho-hintdata');
