@@ -16,7 +16,7 @@ Ho_Templatehints extends the default Magento template hints.
 ## Installation
 
 ```
-composer require honl/magento2-templatehints
+composer require --dev honl/magento2-templatehints
 php bin/magento module:enable Ho_Templatehints
 php bin/magento setup:upgrade
 ```
@@ -24,7 +24,7 @@ php bin/magento setup:upgrade
 ### Development installation (git enabled)
 
 ```
-composer require honl/magento2-templatehints "dev-master"
+composer require --dev honl/magento2-templatehints "dev-master"
 php bin/magento module:enable Ho_Templatehints
 php bin/magento setup:upgrade
 ```
