@@ -1,7 +1,6 @@
 # H&O Magento 2 Advanced Template Hints module
 
-![Overview $0](docs/total-workings.gif)
-
+![Overview](docs/total-workings.gif)
 
 Ho_Templatehints extends the default Magento template hints.
 
