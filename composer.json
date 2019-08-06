@@ -1,5 +1,8 @@
 {
   "name": "honl/magento2-templatehints",
+  "replace": {
+    "ho-nl/magento2-templatehints": "self.version"
+  },
   "description": "H&O Magento 2 Advanced Template Hints module",
   "homepage": "https://github.com/ho-nl/magento2-Ho_Templatehints",
   "authors": [
