@@ -4,7 +4,7 @@
 
 Ho_Templatehints extends the default Magento template hints.
 
-- Easily accessible with with muscle memory `?ath=1`.
+- Easily accessible with muscle memory `?ath=1`.
 - Shows hints for **Templates**, **AbstractBlocks** (Blocks), **Containers** and **UI Components**.
 - No layout interference: Using css outline instead of borders of other HTML elements, so it doesn't f'up the layout.
 
@@ -31,7 +31,7 @@ php bin/magento setup:upgrade
 ![Setting up PHPStorm](docs/phpstorm-config.png)
 
 ## Usage
-1. Set your Magento 2 installation to developer mode (when in production mode make sure to add your IP-address in Developer Client Restrictions).
+1. Set your Magento 2 installation to developer mode (when in production mode make sure to add your IP address in Developer Client Restrictions).
 2. Add `?ath=1` to your URL to activate.
 3. Open up your console in you Chrome/Firefox/Safari/~IE~ devtools.
 4. hold <kbd>⇧</kbd> (shift)
@@ -50,7 +50,7 @@ hint($0)
 
 
 ## Inner Workings
-The module adds an additional html-attribute to the outer most element of a layout element.
+The module adds an additional HTML attribute to the outer most element of a layout element.
 
 ## Credits
 Inspiration from [Aoe_TemplateHints](https://github.com/AOEpeople/Aoe_TemplateHints) and a lot of love from H&O.
