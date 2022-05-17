@@ -173,7 +173,7 @@ class LayoutPlugin
                 'phpClass' => $this->getBlockClass($block),
             ],
             'extra' => [
-                'cacheKeyInfo' => $block->getCacheKeyInfo()
+                'cacheKeyInfo' => @$block->getCacheKeyInfo()
             ],
             'paths' => [
                 'template' => $block->getTemplateFile(),
@@ -206,7 +206,7 @@ class LayoutPlugin
             if (is_array($elem)) {
                 return self::filterEscape($elem);
             }
-            return addslashes($elem); // @codingStandardsIgnoreLine
+            return is_null($elem) ? $elem : addslashes($elem); // @codingStandardsIgnoreLine
         }, $data));
     }
 
