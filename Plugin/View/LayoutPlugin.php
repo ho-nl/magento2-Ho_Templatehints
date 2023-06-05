@@ -33,6 +33,13 @@ class LayoutPlugin
      */
     private $directoryList;
 
+    /**
+     * Templatehints config helper
+     *
+     * @var Config $hintConfig
+     */    
+    private $hintConfig;
+
     /** @var Structure $structure */
     private $structure;
 
